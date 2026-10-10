@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainrot | Learn Gen Alpha</title>
+<style>
+:root {
+  --green: #58cc02;
+  --dark-green: #46a302;
+  --ink: #263238;
+  --muted: #718096;
+  --line: #e5e9eb;
+  --bg: #f7f9fa;
+  --blue: #1cb0f6;
+  --purple: #9b72f2;
+  --red: #ff4b4b;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: white;
+  border-bottom: 2px solid var(--line);
+  padding: 15px max(18px, calc((100vw - 1100px)/2));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.logo {
+  color: var(--dark-green);
+  font-size: 1.55rem;
+  font-weight: 1000;
+}
+.stats { display: flex; gap: 15px; font-weight: 900; }
+.layout {
+  max-width: 1100px;
+  margin: 25px auto;
+  padding: 0 18px;
+  display: grid;
+  grid-template-columns: 210px minmax(0,1fr);
+  gap: 25px;
+}
+nav { display: flex; flex-direction: column; gap: 9px; }
+.nav {
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 13px;
+  padding: 13px;
+  text-align: left;
+  font-weight: 900;
+  color: #68777d;
+}
+.nav:hover { background: #edf1f3; }
+.nav.active {
+  background: #e8f8dc;
+  border-color: #b8e994;
+  color: #367c08;
+}
+main { min-width: 0; }
+.hero {
+  background: linear-gradient(125deg,#e9fbdc,#e1f5ff);
+  border: 2px solid #d8e9dc;
+  border-radius: 22px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.hero h1 { font-size: clamp(1.8rem,4vw,2.6rem); margin: 0 0 8px; }
+.hero p { color: #50666a; line-height: 1.5; margin: 0; }
+.owl { font-size: 4rem; }
+h2 { margin-top: 28px; }
+.unit {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  margin: 12px 0;
+  background: white;
+  border: 2px solid var(--line);
+  border-bottom-width: 5px;
+  border-radius: 17px;
+}
+.unit.locked { opacity: .55; }
+.unit-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  background: #e8f8dc;
+  border-radius: 14px;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+.unit-info { flex: 1; }
+.unit-info h3 { margin: 0 0 5px; }
+.unit-info p { margin: 0; color: var(--muted); font-size: .9rem; }
+.pill {
+  font-size: .76rem;
+  font-weight: 900;
+  background: #edf1f3;
+  border-radius: 99px;
+  padding: 5px 8px;
+  white-space: nowrap;
+}
+.primary, .secondary {
+  font-weight: 900;
+  padding: 12px 17px;
+  border-radius: 13px;
+}
+.primary {
+  color: white;
+  background: var(--green);
+  border: 0;
+  border-bottom: 4px solid var(--dark-green);
+}
+.primary:hover { filter: brightness(.96); }
+.primary:disabled { opacity: .5; cursor: not-allowed; }
+.secondary {
+  background: white;
+  border: 2px solid var(--line);
+  border-bottom-width: 4px;
+}
+.panel {
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 22px;
+  padding: 23px;
+}
+.hidden { display: none !important; }
+.lesson-head { display: flex; align-items: center; gap: 12px; }
+.close { border: 0; background: none; font-size: 1.7rem; color: var(--muted); }
+.progress {
+  height: 13px;
+  flex: 1;
+  background: #e7edef;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress div {
+  width: 0;
+  height: 100%;
+  background: var(--green);
+  transition: width .25s;
+}
+.kicker {
+  color: var(--muted);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: .8rem;
+  margin-top: 26px;
+}
+.question { font-size: 1.65rem; line-height: 1.35; }
+.answers { display: grid; gap: 10px; }
+.answer {
+  padding: 15px;
+  text-align: left;
+  background: white;
+  border: 2px solid var(--line);
+  border-bottom-width: 4px;
+  border-radius: 13px;
+  font-weight: 800;
+}
+.answer.selected { background: #eaf8ff; border-color: var(--blue); }
+.answer.correct { background: #e8f8dc; border-color: var(--green); }
+.answer.wrong { background: #fff0f0; border-color: var(--red); }
+.lesson-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 2px solid var(--line);
+  margin-top: 23px;
+  padding-top: 17px;
+}
+.feedback { font-weight: 800; line-height: 1.5; }
+.good { color: #328000; }
+.bad { color: #c73636; }
+.result { text-align: center; padding: 25px 5px; }
+.result .big { font-size: 4rem; }
+.result p { line-height: 1.6; color: var(--muted); }
+.word {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+.word strong { color: #367c08; }
+.word p { margin: 0 0 5px; line-height: 1.5; }
+.search {
+  width: 100%;
+  border: 2px solid var(--line);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+.note {
+  background: #fff7dc;
+  border: 2px solid #ffe7a0;
+  border-radius: 13px;
+  padding: 14px;
+  color: #66531e;
+  font-size: .9rem;
+  line-height: 1.5;
+  margin-top: 20px;
+}
+.badges {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+.badge { border: 2px solid var(--line); border-radius: 14px; padding: 15px; }
+.badge.unlocked { background: #f1ffe9; border-color: #bde99b; }
+.badge span { font-size: 1.8rem; }
+.badge h3 { margin-bottom: 5px; }
+.badge p { color: var(--muted); font-size: .9rem; }
+footer { text-align: center; padding: 25px; color: #839096; }
+@media(max-width:750px) {
+  .layout { grid-template-columns: 1fr; margin-top: 14px; }
+  nav { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; }
+  .nav { text-align: center; padding: 10px 4px; font-size: .8rem; }
+  header { padding: 14px 12px; }
+  .logo { font-size: 1.2rem; }
+  .stats { gap: 8px; font-size: .85rem; }
+  .owl { font-size: 2.8rem; }
+  .hero { padding: 18px; }
+  .unit { gap: 8px; padding: 10px; }
+  .unit-icon { width: 42px; height: 42px; }
+  .pill { display: none; }
+  .word { grid-template-columns: 1fr; gap: 5px; }
+  .badges { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🦉 brainrot.</div>
+  <div class="stats">
+    <div>🔥 <span id="streak">0</span></div>
+    <div>💎 <span id="gems">0</span></div>
+    <div>⚡ <span id="xp">0</span> XP</div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav aria-label="Main menu">
+    <button class="nav active" data-page="learn">🗺️ Learn</button>
+    <button class="nav" data-page="words">📚 Dictionary</button>
+    <button class="nav" data-page="achievements">🏆 Achievements</button>
+  </nav>
+
+  <main>
+    <section id="learnPage">
+      <div class="hero">
+        <div>
+          <h1>Learn the language of the internet.</h1>
+          <p>Short lessons. Questionable vocabulary. Surprisingly useful context.</p>
+        </div>
+        <div class="owl">🦉</div>
+      </div>
+      <h2>Your learning path</h2>
+      <div id="units"></div>
+      <div class="note">
+        This is a fan-made learning game, not an official Duolingo product.
+        Slang changes quickly, and meanings depend on context.
+      </div>
+    </section>
+
+    <section id="lessonPage" class="hidden">
+      <div class="panel">
+        <div class="lesson-head">
+          <button class="close" id="exitLesson" aria-label="Exit lesson">×</button>
+          <div class="progress"><div id="progressBar"></div></div>
+          <strong id="questionCount">1/5</strong>
+        </div>
+        <div id="questionArea"></div>
+      </div>
+    </section>
+
+    <section id="wordsPage" class="hidden">
+      <div class="panel">
+        <h1>📚 Slang dictionary</h1>
+        <p>Search the vocabulary and become slightly less confused.</p>
+        <input id="searchWords" class="search" placeholder="Search a word or meaning..." aria-label="Search slang">
+        <div id="wordList"></div>
+      </div>
+    </section>
+
+    <section id="achievementsPage" class="hidden">
+      <div class="panel">
+        <h1>🏆 Achievements</h1>
+        <p>Collect badges as you learn.</p>
+        <div id="achievementGrid" class="badges"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>Made for learning, laughs, and responsible levels of brainrot. ✨</footer>
+
+<script>
+"use strict";
+
+const units = [
+{
+ id:0, title:"Internet Basics", icon:"🌱",
+ desc:"Start with the classics.",
+ lessons:[
+  {q:'What does "cooked" usually mean in slang?',opts:["Someone is making dinner","Someone is in trouble or has been defeated","Someone is sleepy","Someone is baking"],a:1,why:'"Cooked" can mean you are in trouble, exhausted, or thoroughly beaten.'},
+  {q:'"That was a W" means...',opts:["That was a win or good thing","That was weird","That was a warning","That was a weather report"],a:0,why:"W stands for win. An L is a loss."},
+  {q:'If something is "mid," it is...',opts:["Very expensive","In the middle of the room","Average or unimpressive","Brand new"],a:2,why:'"Mid" means mediocre or not particularly impressive.'},
+  {q:'"No cap" means...',opts:["Wear a hat","No lie; seriously","Stop talking","I forgot"],a:1,why:'"No cap" means "for real" or "I am not lying."'},
+  {q:'Someone says "I am dead 💀" after a joke. They mean...',opts:["They need a doctor","They are laughing really hard","They are bored","They are leaving"],a:1,why:"The skull emoji often signals that something is extremely funny."}
+ ]
+},
+{
+ id:1,title:"Rizz Academy",icon:"✨",
+ desc:"Charm, compliments, and context.",
+ lessons:[
+  {q:'"Rizz" is short for...',opts:["Rhythm","Charisma","Rizzotto","Reason"],a:1,why:"Rizz means charm or charisma, often in a flirting context."},
+  {q:'"Unspoken rizz" means...',opts:["Charm without saying much","A very loud speech","Being confused","A secret password"],a:0,why:"It describes seeming charming without needing to say much."},
+  {q:'"W rizz" means...',opts:["Bad manners","Good charm","A weather warning","A gaming console"],a:1,why:"W means win, so W rizz is good charm."},
+  {q:'Slang works best when you...',opts:["Use every word in every sentence","Ignore the situation","Pay attention to context","Shout it at strangers"],a:2,why:"Context matters more than trying to cram slang into every sentence."},
+  {q:'Which is a natural response to a funny joke?',opts:["I acknowledge your humor","I am dead 💀","Greetings, comedian","Rizz protocol initiated"],a:1,why:"Casual slang feels most natural with the right audience."}
+ ]
+},
+{
+ id:2,title:"The Fanum Tax",icon:"🍟",
+ desc:"Memes, food, and friend-group lore.",
+ lessons:[
+  {q:'"Fanum tax" is a meme about...',opts:["A government form","Taking some of a friend’s food","Paying for Wi-Fi","Doing homework"],a:1,why:"It refers to playfully taking a portion of someone’s food."},
+  {q:'Your friend takes a fry and says "tax." This is...',opts:["A literal tax bill","The meme in action","A cooking class","A sports rule"],a:1,why:"The phrase is often used as a joke when someone takes a snack."},
+  {q:'A meme reference is funniest when...',opts:["Everyone is forced to laugh","It fits the moment","You explain it for 40 minutes","You use it in a job interview"],a:1,why:"A reference tends to land when it fits the moment and audience."},
+  {q:'"Bro taxed my fries" probably means...',opts:["My friend took some fries","My fries filed taxes","The restaurant closed","I bought a phone"],a:0,why:"It is a playful way to say a friend took some of your food."},
+  {q:'Should you take food without asking because it is a meme?',opts:["Always","Only if it is expensive","No, ask first","Only on Tuesdays"],a:2,why:"The joke is not a free pass to ignore people’s boundaries."}
+ ]
+},
+{
+ id:3,title:"Ohio & Brainrot",icon:"🌀",
+ desc:"Decode the chaotic references.",
+ lessons:[
+  {q:'In meme slang, "Ohio" often describes something...',opts:["Strange or absurd","Very ordinary","Extremely quiet","Officially approved"],a:0,why:"Ohio memes often use the state as shorthand for bizarre situations."},
+  {q:'NPC comes from gaming and means...',opts:["New Pizza Club","Non-player character","National Potato Council","Next Personal Computer"],a:1,why:"Online, NPC can describe someone acting predictably."},
+  {q:'"Brainrot" online usually refers to...',opts:["A medical diagnosis","Absurd or repetitive internet content","A school subject","A repair tool"],a:1,why:"It is humorous slang for internet content that gets stuck in your head."},
+  {q:'What is the best way to use a meme phrase?',opts:["In every sentence","When it fits and your audience gets it","During every serious conversation","To confuse everyone"],a:1,why:"A little context-awareness goes a long way."},
+  {q:'You do not understand a new slang term. What should you do?',opts:["Pretend forever","Ask what it means","Use it randomly","Delete the internet"],a:1,why:"Asking is allowed. Language changes constantly."}
+ ]
+},
+{
+ id:4,title:"Certified Fluent",icon:"👑",
+ desc:"Put your knowledge to the test.",
+ lessons:[
+  {q:'"That outfit is fire" means...',opts:["It is burning","It looks really good","It is wet","It is unfinished"],a:1,why:'"Fire" means excellent or impressive.'},
+  {q:'"Bet" in casual conversation often means...',opts:["Okay or sounds good","A formal contract","Maybe next year","I disagree forever"],a:0,why:'"Bet" can mean "okay," "deal," or "sounds good."'},
+  {q:'"Sus" means...',opts:["Suspicious","Super sunny","Successful","Sleepy"],a:0,why:"Sus is short for suspicious."},
+  {q:'"Let him cook" means...',opts:["Call a chef","Let them continue; they might do something good","Turn off the oven","Cancel the plan"],a:1,why:"It means give someone a chance to continue what they are doing."},
+  {q:'What matters most when learning slang?',opts:["Using as much as possible","Never changing vocabulary","Understanding meaning, context, and tone","Memorizing emojis only"],a:2,why:"Understanding comes first; natural use comes with time."}
+ ]
+}
+];
+
+const dictionary = [
+ ["Cooked","In trouble, exhausted, or thoroughly defeated.","I forgot the project was due today. I’m cooked."],
+ ["W / L","A win / a loss; also used to praise or criticize something.","You helped your friend? Massive W."],
+ ["Mid","Average, mediocre, or underwhelming.","The movie was okay, but the ending was mid."],
+ ["No cap","For real; honestly; no lie.","That was the best pizza, no cap."],
+ ["Rizz","Charm or charisma, often in a flirting context.","He has rizz."],
+ ["Fanum tax","A meme about playfully taking a portion of someone’s food.","You took my chips? Fanum tax?"],
+ ["Ohio","Meme slang for something bizarre or absurd.","What is happening in this Ohio-level video?"],
+ ["NPC","Non-player character; slang for someone acting predictably.","I walked into the same wall twice—NPC moment."],
+ ["Brainrot","Absurd or repetitive internet content that gets stuck in your head.","I watched that meme so many times; total brainrot."],
+ ["Fire","Excellent, impressive, or very good.","That song is fire."],
+ ["Bet","Okay, deal, or sounds good.","Meet at 4? Bet."],
+ ["Sus","Suspicious or questionable.","That excuse sounds sus."],
+ ["Let him cook","Let someone continue; they may be onto something.","Wait, let him cook."],
+ ["I’m dead 💀","I’m laughing really hard.","That typo took me out. I’m dead."],
+ ["Aura","A person’s perceived vibe, coolness, or presence.","They walked in with +1000 aura."]
+];
+
+const achievements = [
+ {id:"first",icon:"🌟",title:"First Steps",desc:"Finish your first lesson.",test:s=>s.lessons>=1},
+ {id:"xp50",icon:"⚡",title:"XP Collector",desc:"Earn 50 XP.",test:s=>s.xp>=50},
+ {id:"three",icon:"📚",title:"Study Session",desc:"Finish 3 lessons.",test:s=>s.lessons>=3},
+ {id:"perfect",icon:"🎯",title:"Perfect Run",desc:"Get every answer right in a lesson.",test:s=>s.perfect>=1},
+ {id:"words",icon:"🧠",title:"Word Nerd",desc:"Search the dictionary 10 times.",test:s=>s.searches>=10},
+ {id:"unit",icon:"👑",title:"Unit Unlocker",desc:"Finish a full unit.",test:s=>s.units>=1}
+];
+
+const freshState = {
+ xp:0,gems:0,streak:0,lessons:0,perfect:0,
+ searches:0,units:0,completed:[],today:null
+};
+
+let state;
+try {
+ state = {...freshState,...JSON.parse(localStorage.getItem("brainrotProgress") || "{}")};
+} catch {
+ state = {...freshState};
+}
+
+function save() {
+ try { localStorage.setItem("brainrotProgress",JSON.stringify(state)); }
+ catch(e) { console.warn("Progress could not be saved in this browser."); }
+ renderStats();
+ renderAchievements();
+}
+
+function renderStats() {
+ document.getElementById("xp").textContent=state.xp;
+ document.getElementById("gems").textContent=state.gems;
+ document.getElementById("streak").textContent=state.streak;
+}
+
+function showPage(page) {
+ ["learn","lesson","words","achievements"].forEach(p=>{
+  document.getElementById(p+"Page").classList.toggle("hidden",p!==page);
+ });
+ document.querySelectorAll(".nav").forEach(b=>{
+  b.classList.toggle("active",b.dataset.page===page);
+ });
+ if(page==="words") renderWords();
+ if(page==="achievements") renderAchievements();
+}
+
+document.querySelectorAll(".nav").forEach(button=>{
+ button.addEventListener("click",()=>showPage(button.dataset.page));
+});
+
+function renderUnits() {
+ const root=document.getElementById("units");
+ root.innerHTML="";
+ units.forEach((unit,index)=>{
+  const complete=state.completed.includes(unit.id);
+  const unlocked=index===0||state.completed.includes(index-1);
+  const card=document.createElement("div");
+  card.className="unit"+(unlocked?"":" locked");
+  card.innerHTML=`
+   <div class="unit-icon">${unit.icon}</div>
+   <div class="unit-info">
+    <h3>${unit.title}</h3><p>${unit.desc}</p>
+   </div>
+   <span class="pill">${complete?"✓ Complete":unlocked?"5 questions":"🔒 Locked"}</span>
+   <button class="primary" ${unlocked?"":"disabled"}>${complete?"Replay":"Start"}</button>`;
+  card.querySelector("button").addEventListener("click",()=>startLesson(unit));
+  root.appendChild(card);
+ });
+}
+
+let currentUnit=null;
+let questionIndex=0;
+let correctCount=0;
+let selected=null;
+let answered=false;
+
+function startLesson(unit) {
+ currentUnit=unit;
+ questionIndex=0;
+ correctCount=0;
+ showPage("lesson");
+ renderQuestion();
+}
+
+function renderQuestion() {
+ selected=null;
+ answered=false;
+ const question=currentUnit.lessons[questionIndex];
+ document.getElementById("progressBar").style.width=
+  (questionIndex/currentUnit.lessons.length*100)+"%";
+ document.getElementById("questionCount").textContent=
+  `${questionIndex+1}/${currentUnit.lessons.length}`;
+
+ const area=document.getElementById("questionArea");
+ area.innerHTML=`
+  <div class="kicker">Choose the best answer</div>
+  <h2 class="question">${question.q}</h2>
+  <div class="answers">
+   ${question.opts.map((option,index)=>`
+    <button class="answer" data-index="${index}">
+     ${String.fromCharCode(65+index)}. ${option}
+    </button>`).join("")}
+  </div>
+  <div class="lesson-bottom">
+   <div id="feedback" class="feedback" aria-live="polite">Choose an answer.</div>
+   <button id="checkAnswer" class="primary" disabled>Check</button>
+  </div>`;
+
+ area.querySelectorAll(".answer").forEach(button=>{
+  button.addEventListener("click",()=>{
+   if(answered)return;
+   selected=Number(button.dataset.index);
+   area.querySelectorAll(".answer").forEach(b=>{
+    b.classList.toggle("selected",b===button);
+   });
+   document.getElementById("checkAnswer").disabled=false;
+  });
+ });
+ document.getElementById("checkAnswer").addEventListener("click",checkAnswer);
+}
+
+function checkAnswer() {
+ const question=currentUnit.lessons[questionIndex];
+ const buttons=document.querySelectorAll(".answer");
+
+ if(!answered) {
+  if(selected===null)return;
+  answered=true;
+  const correct=selected===question.a;
+  if(correct)correctCount++;
+  buttons.forEach((button,index)=>{
+   if(index===question.a)button.classList.add("correct");
+   else if(index===selected)button.classList.add("wrong");
+  });
+  const feedback=document.getElementById("feedback");
+  feedback.className="feedback "+(correct?"good":"bad");
+  feedback.textContent=(correct?"Correct! 🎉 ":"Not quite. 💡 ")+question.why;
+  document.getElementById("checkAnswer").textContent=
+   questionIndex===currentUnit.lessons.length-1?"Finish lesson":"Continue";
+  return;
+ }
+
+ questionIndex++;
+ if(questionIndex<currentUnit.lessons.length)renderQuestion();
+ else finishLesson();
+}
+
+function finishLesson() {
+ const perfect=correctCount===currentUnit.lessons.length;
+ const first=!state.completed.includes(currentUnit.id);
+ state.xp+=correctCount*10;
+ state.gems+=correctCount;
+ state.lessons++;
+ if(perfect)state.perfect++;
+ if(first) {
+  state.completed.push(currentUnit.id);
+  state.units++;
+ }
+ const today=new Date().toLocaleDateString("en-CA");
+ if(state.today!==today) {
+  state.streak=state.today?state.streak+1:1;
+  state.today=today;
+ }
+ save();
+ renderUnits();
+
+ document.getElementById("progressBar").style.width="100%";
+ document.getElementById("questionCount").textContent="✓";
+ document.getElementById("questionArea").innerHTML=`
+  <div class="result">
+   <div class="big">${perfect?"🏆":"🎉"}</div>
+   <h2>${perfect?"Perfect lesson!":"Lesson complete!"}</h2>
+   <p>You got <strong>${correctCount}/${currentUnit.lessons.length}</strong> correct.</p>
+   <p>You earned <strong>${correctCount*10} XP</strong> and ${correctCount} gems!</p>
+   <button class="primary" id="backToPath">Back to learning path</button>
+  </div>`;
+ document.getElementById("backToPath").addEventListener("click",()=>{
+  showPage("learn");
+  renderUnits();
+ });
+}
+
+document.getElementById("exitLesson").addEventListener("click",()=>{
+ showPage("learn");
+ renderUnits();
+});
+
+function renderWords() {
+ const query=document.getElementById("searchWords").value.toLowerCase().trim();
+ const filtered=dictionary.filter(word=>word.join(" ").toLowerCase().includes(query));
+ const root=document.getElementById("wordList");
+ root.innerHTML=filtered.length?filtered.map(word=>`
+  <div class="word">
+   <strong>${word[0]}</strong>
+   <div><p>${word[1]}</p><p><em>${word[2]}</em></p></div>
+  </div>`).join(""):"<p>No words found. Try another search.</p>";
+}
+
+document.getElementById("searchWords").addEventListener("input",()=>{
+ state.searches++;
+ save();
+ renderWords();
+});
+
+function renderAchievements() {
+ const root=document.getElementById("achievementGrid");
+ if(!root)return;
+ root.innerHTML=achievements.map(achievement=>{
+  const unlocked=achievement.test(state);
+  return `
+   <div class="badge ${unlocked?"unlocked":""}">
+    <span>${unlocked?achievement.icon:"🔒"}</span>
+    <h3>${achievement.title}</h3>
+    <p>${achievement.desc}</p>
+    <strong>${unlocked?"Unlocked":"Not yet"}</strong>
+   </div>`;
+ }).join("");
+}
+
+renderStats();
+renderUnits();
+renderAchievements();
+</script>
+</body>
+</html>
